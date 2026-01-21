@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: smart-credit-risk-and-loan-lifecycle-management

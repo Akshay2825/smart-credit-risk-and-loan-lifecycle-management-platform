@@ -3,7 +3,11 @@ package com.crlm.model;
 import com.crlm.enums.Decision;
 import com.crlm.enums.DecisionBy;
 import jakarta.persistence.*;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.annotation.CreatedDate;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +28,7 @@ import java.util.UUID;
 public class LoanDecision {
 
     @Id
-    @GeneratedValue
+    @UuidGenerator
     private UUID id;
 
     /**
@@ -66,7 +70,8 @@ public class LoanDecision {
      * Decision timestamp.
      */
     @Column(nullable = false, updatable = false)
-    private LocalDateTime decidedAt;
+    @CreatedDate
+    private Instant decidedAt;
 
     protected LoanDecision() {
         // for JPA
@@ -84,7 +89,6 @@ public class LoanDecision {
         this.interestRate = interestRate;
         this.decidedBy = decidedBy;
         this.remarks = remarks;
-        this.decidedAt = LocalDateTime.now();
     }
 
     /* ---------- Factory methods (IMPORTANT) ---------- */
@@ -172,9 +176,5 @@ public class LoanDecision {
 
     public String getRemarks() {
         return remarks;
-    }
-
-    public LocalDateTime getDecidedAt() {
-        return decidedAt;
     }
 }

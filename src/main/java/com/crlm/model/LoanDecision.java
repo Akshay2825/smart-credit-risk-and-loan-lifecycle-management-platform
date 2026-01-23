@@ -3,12 +3,9 @@ package com.crlm.model;
 import com.crlm.enums.Decision;
 import com.crlm.enums.DecisionBy;
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -25,15 +22,10 @@ import java.util.UUID;
                 )
         }
 )
-public class LoanDecision {
-
-    @Id
-    @UuidGenerator
-    private UUID id;
+public class LoanDecision extends BaseEntity {
 
     /**
      * Reference to LoanApplication (NO JPA relationship by design).
-     * Keeps the model microservice-safe and avoids ORM coupling.
      */
     @Column(name = "application_id", nullable = false, updatable = false)
     private UUID applicationId;
@@ -47,7 +39,6 @@ public class LoanDecision {
 
     /**
      * Interest rate applicable ONLY when decision is APPROVED.
-     * Null for rejected decisions.
      */
     @Column(precision = 5, scale = 2)
     private BigDecimal interestRate;
@@ -61,20 +52,19 @@ public class LoanDecision {
 
     /**
      * Reason for approval / rejection.
-     * Mandatory for manual decisions.
      */
     @Column(length = 500)
     private String remarks;
 
     /**
-     * Decision timestamp.
+     * BUSINESS timestamp – when the decision was actually taken.
+     * This is NOT auditing.
      */
     @Column(nullable = false, updatable = false)
-    @CreatedDate
     private Instant decidedAt;
 
     protected LoanDecision() {
-        // for JPA
+        // JPA only
     }
 
     private LoanDecision(
@@ -89,9 +79,10 @@ public class LoanDecision {
         this.interestRate = interestRate;
         this.decidedBy = decidedBy;
         this.remarks = remarks;
+        this.decidedAt = Instant.now(); // explicit, business-owned
     }
 
-    /* ---------- Factory methods (IMPORTANT) ---------- */
+    /* ---------- Factory methods ---------- */
 
     public static LoanDecision autoApproved(
             UUID applicationId,
@@ -152,11 +143,7 @@ public class LoanDecision {
         }
     }
 
-    /* ---------- Getters only (immutability) ---------- */
-
-    public UUID getId() {
-        return id;
-    }
+    /* ---------- Getters ---------- */
 
     public UUID getApplicationId() {
         return applicationId;
@@ -176,5 +163,9 @@ public class LoanDecision {
 
     public String getRemarks() {
         return remarks;
+    }
+
+    public Instant getDecidedAt() {
+        return decidedAt;
     }
 }

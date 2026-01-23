@@ -30,7 +30,7 @@ class LoanDecisionRepositoryTest {
 
         LoanDecision saved = repository.save(decision);
 
-        assertNotNull(saved.getId());
+        assertNotNull(saved.getApplicationId());
     }
 }
 

@@ -2,6 +2,8 @@ package com.crlm.serviceImpl;
 
 import com.crlm.enums.Decision;
 import com.crlm.enums.DecisionBy;
+import com.crlm.exception.BusinessRuleViolationException;
+import com.crlm.exception.ResourceNotFoundException;
 import com.crlm.model.LoanDecision;
 import com.crlm.repository.LoanDecisionRepository;
 import com.crlm.service.LoanDecisionService;
@@ -95,7 +97,7 @@ public class LoanDecisionServiceImpl implements LoanDecisionService {
     public LoanDecision getByApplicationId(UUID applicationId) {
         return loanDecisionRepository.findByApplicationId(applicationId)
                 .orElseThrow(() ->
-                        new IllegalStateException(
+                        new ResourceNotFoundException(
                                 "LoanDecision not found for applicationId: " + applicationId
                         )
                 );
@@ -106,7 +108,7 @@ public class LoanDecisionServiceImpl implements LoanDecisionService {
                 loanDecisionRepository.existsByApplicationId(applicationId);
 
         if (exists) {
-            throw new IllegalStateException(
+            throw new BusinessRuleViolationException(
                     "LoanDecision already exists for applicationId: " + applicationId
             );
         }

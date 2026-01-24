@@ -1,6 +1,8 @@
 package com.crlm.serviceImpl;
 
 import com.crlm.enums.Decision;
+import com.crlm.exception.BusinessRuleViolationException;
+import com.crlm.exception.ResourceNotFoundException;
 import com.crlm.model.LoanAccount;
 import com.crlm.model.LoanDecision;
 import com.crlm.repository.LoanAccountRepository;
@@ -45,14 +47,14 @@ public class LoanAccountServiceImpl implements LoanAccountService {
         LoanDecision decision =
                 loanDecisionRepository.findByApplicationId(applicationId)
                         .orElseThrow(() ->
-                                new IllegalStateException(
+                                new ResourceNotFoundException(
                                         "LoanDecision not found for applicationId: " + applicationId
                                 )
                         );
 
         // 2️⃣ Decision must be APPROVED
         if (decision.getDecision() != Decision.APPROVED) {
-            throw new IllegalStateException(
+            throw new BusinessRuleViolationException(
                     "LoanAccount can only be created for APPROVED LoanDecision"
             );
         }
@@ -62,7 +64,7 @@ public class LoanAccountServiceImpl implements LoanAccountService {
                 loanAccountRepository.existsByLoanDecisionId(decision.getId());
 
         if (accountExists) {
-            throw new IllegalStateException(
+            throw new BusinessRuleViolationException(
                     "LoanAccount already exists for this LoanDecision"
             );
         }
@@ -88,7 +90,7 @@ public class LoanAccountServiceImpl implements LoanAccountService {
     public LoanAccount getById(UUID loanAccountId) {
         return loanAccountRepository.findById(loanAccountId)
                 .orElseThrow(() ->
-                        new IllegalStateException(
+                        new ResourceNotFoundException(
                                 "LoanAccount not found with id: " + loanAccountId
                         )
                 );

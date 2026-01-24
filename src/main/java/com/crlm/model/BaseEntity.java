@@ -23,4 +23,14 @@ public abstract class BaseEntity {
     @CreatedDate
     private Instant createdAt;
 
+    public UUID getId() {
+        return id;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+
+
 }

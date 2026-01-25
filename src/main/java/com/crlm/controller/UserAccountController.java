@@ -1,7 +1,44 @@
 package com.crlm.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.crlm.model.UserAccount;
+import com.crlm.service.UserAccountService;
+import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
+@AllArgsConstructor
+@RequestMapping("/api/v1/users")
 public class UserAccountController {
+
+    private final UserAccountService userAccountService;
+
+    @PostMapping
+    public UserAccount createUser(@RequestBody UserAccount userAccount){
+        System.out.println("INSIDE CONTROLLER");
+        return userAccountService.createUserAccount(userAccount);
+    }
+
+    @GetMapping("/{userId}")
+    public UserAccount getUserById(@PathVariable UUID userId){
+        return userAccountService.getByUserId(userId);
+    }
+
+    @GetMapping("/username/{username}")
+    public UserAccount getByUsername(@PathVariable String username){
+        return  userAccountService.getByUsername(username);
+    }
+
+    @PatchMapping("/{userId}/block")
+    public void blockUser(@PathVariable UUID userId){
+        userAccountService.blockUser(userId);
+    }
+
+    @PatchMapping("/{userId}/activate")
+    public void activateUser(@PathVariable UUID userId){
+        userAccountService.activateUser(userId);
+    }
+
 }

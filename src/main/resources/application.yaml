@@ -7,8 +7,10 @@ spring:
     password: admin
     driver-class-name: org.postgresql.Driver
 
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -22,5 +24,6 @@ server:
   servlet:
     session:
       timeout: 30m
+
 
 

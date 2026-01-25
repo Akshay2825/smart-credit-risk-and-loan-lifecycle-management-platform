@@ -2,10 +2,14 @@ package com.crlm.model;
 
 import com.crlm.enums.EmploymentType;
 import jakarta.persistence.*;
+import lombok.Data;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 
+@Data
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "customers", indexes = {
         @Index(name = "id_customer_pan", columnList = "pan")

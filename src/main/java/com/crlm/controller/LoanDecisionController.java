@@ -5,13 +5,14 @@ import com.crlm.dto.LoanDecisionRejectRequestDTO;
 import com.crlm.dto.LoanDecisionResponseDTO;
 import com.crlm.model.LoanDecision;
 import com.crlm.service.LoanDecisionService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/loan-decisions")
+@RequestMapping("/api/v1/loan-decisions")
 public class LoanDecisionController {
 
     private final LoanDecisionService loanDecisionService;
@@ -23,7 +24,7 @@ public class LoanDecisionController {
     @PostMapping("/auto-approve")
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDecisionResponseDTO autoApprove(
-            @RequestBody LoanDecisionApproveRequestDTO request
+            @Valid @RequestBody LoanDecisionApproveRequestDTO request
     ) {
         LoanDecision decision =
                 loanDecisionService.autoApprove(
@@ -38,7 +39,7 @@ public class LoanDecisionController {
     @PostMapping("/manual-approve")
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDecisionResponseDTO manualApprove(
-            @RequestBody LoanDecisionApproveRequestDTO request
+            @Valid @RequestBody LoanDecisionApproveRequestDTO request
     ) {
         LoanDecision decision =
                 loanDecisionService.manualApprove(
@@ -53,7 +54,7 @@ public class LoanDecisionController {
     @PostMapping("/reject")
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDecisionResponseDTO reject(
-            @RequestBody LoanDecisionRejectRequestDTO request
+            @Valid @RequestBody LoanDecisionRejectRequestDTO request
     ) {
         LoanDecision decision =
                 loanDecisionService.reject(
@@ -74,8 +75,6 @@ public class LoanDecisionController {
         return toResponse(decision);
     }
 
-    /* ---------- Mapping ---------- */
-
     private LoanDecisionResponseDTO toResponse(LoanDecision decision) {
         return new LoanDecisionResponseDTO(
                 decision.getApplicationId(),
@@ -87,3 +86,4 @@ public class LoanDecisionController {
         );
     }
 }
+

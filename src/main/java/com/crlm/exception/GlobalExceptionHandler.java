@@ -3,6 +3,7 @@ package com.crlm.exception;
 import com.crlm.dto.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -62,4 +63,25 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDTO> handleValidationErrors(
+            MethodArgumentNotValidException ex
+    ) {
+        String message =
+                ex.getBindingResult()
+                        .getFieldErrors()
+                        .stream()
+                        .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                        .findFirst()
+                        .orElse("Validation failed");
+
+        ErrorResponseDTO response =
+                new ErrorResponseDTO(message, "VALIDATION_ERROR");
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
+    }
+
 }

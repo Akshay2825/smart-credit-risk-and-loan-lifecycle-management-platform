@@ -4,6 +4,7 @@ import com.crlm.dto.LoanAccountCreateRequestDTO;
 import com.crlm.dto.LoanAccountResponseDTO;
 import com.crlm.model.LoanAccount;
 import com.crlm.service.LoanAccountService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/loan-accounts")
+@RequestMapping("/api/v1/loan-accounts")
 public class LoanAccountController {
 
     private final LoanAccountService loanAccountService;
@@ -21,13 +22,10 @@ public class LoanAccountController {
         this.loanAccountService = loanAccountService;
     }
 
-    /**
-     * Create LoanAccount from approved LoanDecision.
-     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LoanAccountResponseDTO createLoanAccount(
-            @RequestBody LoanAccountCreateRequestDTO request
+            @Valid @RequestBody LoanAccountCreateRequestDTO request
     ) {
         LoanAccount account =
                 loanAccountService.createLoanAccount(
@@ -41,9 +39,6 @@ public class LoanAccountController {
         return toResponse(account);
     }
 
-    /**
-     * Fetch single LoanAccount.
-     */
     @GetMapping("/{loanAccountId}")
     public LoanAccountResponseDTO getLoanAccount(
             @PathVariable UUID loanAccountId
@@ -54,9 +49,6 @@ public class LoanAccountController {
         return toResponse(account);
     }
 
-    /**
-     * Fetch all loans for a customer.
-     */
     @GetMapping("/customer/{customerId}")
     public List<LoanAccountResponseDTO> getLoansForCustomer(
             @PathVariable UUID customerId
@@ -66,8 +58,6 @@ public class LoanAccountController {
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-
-    /* ---------- Mapping ---------- */
 
     private LoanAccountResponseDTO toResponse(LoanAccount account) {
         return new LoanAccountResponseDTO(
@@ -82,3 +72,4 @@ public class LoanAccountController {
         );
     }
 }
+

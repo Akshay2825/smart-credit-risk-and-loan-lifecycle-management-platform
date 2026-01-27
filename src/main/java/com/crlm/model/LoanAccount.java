@@ -103,7 +103,7 @@ public class LoanAccount extends BaseEntity {
         }
 
         return new LoanAccount(
-                decision.getApplicationId(),
+                decision.getId(),
                 customerId,
                 principalAmount,
                 decision.getInterestRate(),

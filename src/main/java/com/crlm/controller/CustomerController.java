@@ -1,8 +1,10 @@
 package com.crlm.controller;
 
 
+import com.crlm.dto.CustomerDto;
 import com.crlm.model.Customer;
 import com.crlm.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +17,8 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer){
-        return customerService.createCustomer(customer);
+    public Customer createCustomer(@Valid @RequestBody CustomerDto dto){
+        return customerService.createCustomer(dto);
     }
 
     @GetMapping("/{customerId}")

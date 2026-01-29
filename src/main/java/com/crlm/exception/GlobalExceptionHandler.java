@@ -37,4 +37,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUserExists(UserAlreadyExistsException ex){
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
+
+    @ExceptionHandler(BusinessRuleException.class)
+    public ResponseEntity<ErrorResponse> handleBusiness(BusinessRuleException ex) {
+        return ResponseEntity.badRequest().body(
+                new ErrorResponse(400, ex.getMessage(), Instant.now())
+        );
+    }
 }

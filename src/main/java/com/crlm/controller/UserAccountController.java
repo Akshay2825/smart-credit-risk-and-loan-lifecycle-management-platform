@@ -18,17 +18,17 @@ public class UserAccountController {
     private final UserAccountService userAccountService;
 
     @PostMapping
-    public UserAccount createUser(@Valid @RequestBody UserAccountDto dto){
+    public UserAccountDto createUser(@Valid @RequestBody UserAccountDto dto){
         return userAccountService.createUserAccount(dto);
     }
 
     @GetMapping("/{userId}")
-    public UserAccount getUserById(@PathVariable UUID userId){
+    public UserAccountDto getUserById(@PathVariable UUID userId){
         return userAccountService.getByUserId(userId);
     }
 
     @GetMapping("/username/{username}")
-    public UserAccount getByUsername(@PathVariable String username){
+    public UserAccountDto getByUsername(@PathVariable String username){
         return  userAccountService.getByUsername(username);
     }
 

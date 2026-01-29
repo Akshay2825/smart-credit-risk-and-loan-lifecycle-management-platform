@@ -21,45 +21,59 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserAccountRepository userAccountRepository;
 
     @Override
-    public UserAccount createUserAccount(UserAccountDto dto) {
-        if(userAccountRepository.existsByUsername(dto.getUsername())){
-            throw new UserAlreadyExistsException("User already exist");
+    public UserAccountDto createUserAccount(UserAccountDto dto) {
+
+        if (userAccountRepository.existsByUsername(dto.getUsername())) {
+            throw new UserAlreadyExistsException("User already exists");
         }
-        UserAccount user= new UserAccount();
+
+        UserAccount user = new UserAccount();
         user.setUsername(dto.getUsername());
-        user.setPasswordHash(dto.getPasswordHash());
+        user.setPasswordHash(dto.getPassword());
         user.setRole(dto.getRole());
         user.setStatus(AccountStatus.ACTIVE);
 
-        return userAccountRepository.save(user);
+        return map(userAccountRepository.save(user));
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserAccountDto getByUsername(String userName) {
+        UserAccount user = userAccountRepository.findByUsername(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return map(user);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserAccount getByUsername(String userName) {
-        return userAccountRepository.findByUsername(userName)
+    public UserAccountDto getByUserId(UUID userId) {
+        UserAccount user = userAccountRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public UserAccount getByUserId(UUID userId) {
-        return userAccountRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return map(user);
     }
 
     @Override
     public void blockUser(UUID userId) {
-        UserAccount user= getByUserId(userId);
+        UserAccount user = userAccountRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setStatus(AccountStatus.BLOCKED);
-
     }
 
     @Override
     public void activateUser(UUID userId) {
-        UserAccount user= getByUserId(userId);
-        user.setStatus((AccountStatus.ACTIVE));
+        UserAccount user = userAccountRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setStatus(AccountStatus.ACTIVE);
+    }
 
+    private UserAccountDto map(UserAccount user) {
+        UserAccountDto dto = new UserAccountDto();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setRole(user.getRole());
+        dto.setStatus(user.getStatus());
+        dto.setCreatedAt(user.getCreatedAt());
+        return dto;
     }
 }

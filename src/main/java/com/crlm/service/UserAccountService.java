@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public interface UserAccountService {
 
-    UserAccount createUserAccount(UserAccountDto dto);
+    UserAccountDto createUserAccount(UserAccountDto dto);
 
-    UserAccount getByUsername( String userName);
+    UserAccountDto getByUsername( String userName);
 
-    UserAccount getByUserId(UUID userId);
+    UserAccountDto getByUserId(UUID userId);
 
     void blockUser(UUID userId);
 

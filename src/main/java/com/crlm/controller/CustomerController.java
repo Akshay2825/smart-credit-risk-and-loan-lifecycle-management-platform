@@ -17,17 +17,17 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public Customer createCustomer(@Valid @RequestBody CustomerDto dto){
+    public CustomerDto createCustomer(@Valid @RequestBody CustomerDto dto){
         return customerService.createCustomer(dto);
     }
 
     @GetMapping("/{customerId}")
-    public Customer getCustomerById(@PathVariable UUID customerId){
+    public CustomerDto getCustomerById(@PathVariable UUID customerId){
         return customerService.getCustomerById(customerId);
     }
 
     @GetMapping("/pan/{pan}")
-    public Customer getCustomerByPan(@PathVariable String pan){
+    public CustomerDto getCustomerByPan(@PathVariable String pan){
         return customerService.getCustomerByPan(pan);
     }
 

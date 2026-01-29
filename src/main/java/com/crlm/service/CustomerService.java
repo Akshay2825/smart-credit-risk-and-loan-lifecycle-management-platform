@@ -7,11 +7,9 @@ import java.util.UUID;
 
 public interface CustomerService {
 
-    Customer createCustomer(CustomerDto dto);
+    CustomerDto createCustomer(CustomerDto dto);
 
-    Customer getCustomerById(UUID customerId);
+    CustomerDto getCustomerById(UUID customerId);
 
-    Customer getCustomerByPan(String pan);
-
-
+    CustomerDto getCustomerByPan(String pan);
 }

@@ -6,14 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
 @Setter
 public class CustomerDto {
 
-    @NotNull
+    // response fields
     private UUID id;
+    private Instant createdAt;
+
+    // request fields
+    @NotNull
+    private UUID userId;
 
     @NotBlank
     private String fullName;

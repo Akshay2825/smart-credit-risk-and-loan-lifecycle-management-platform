@@ -23,17 +23,18 @@ public class CustomerServiceImpl implements CustomerService {
     private final UserAccountRepository userAccountRepository;
 
     @Override
-    public Customer createCustomer(CustomerDto dto) {
-        if(customerRepository.existsByPan(dto.getPan())){
-            throw new BusinessRuleException("Customer with this pan already exist");
-        }
-        UserAccount user= userAccountRepository.findById(dto.getId())
-                .orElseThrow(()-> new ResourceNotFoundException("User not found"));
+    public CustomerDto createCustomer(CustomerDto dto) {
 
-        if(customerRepository.existsByUserAccount(user))
-            throw new BusinessRuleException("User already exist");
+        if (customerRepository.existsByPan(dto.getPan()))
+            throw new BusinessRuleException("Customer with this PAN already exists");
 
-        Customer customer= new Customer();
+        UserAccount user = userAccountRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (customerRepository.existsByUserAccount(user))
+            throw new BusinessRuleException("User already linked to a customer");
+
+        Customer customer = new Customer();
         customer.setUserAccount(user);
         customer.setFullName(dto.getFullName());
         customer.setPan(dto.getPan());
@@ -43,20 +44,37 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setEmploymentType(dto.getEmploymentType());
         customer.setEmploymentYears(dto.getEmploymentYears());
 
-        return customerRepository.save(customer);
+        return map(customerRepository.save(customer));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Customer getCustomerById(UUID customerId) {
-        return customerRepository.findById(customerId)
-                .orElseThrow(()-> new ResourceNotFoundException("Customer not found"));
+    public CustomerDto getCustomerById(UUID customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        return map(customer);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Customer getCustomerByPan(String pan) {
-        return customerRepository.findByPan(pan)
-                .orElseThrow(()-> new ResourceNotFoundException("Customer not found"));
+    public CustomerDto getCustomerByPan(String pan) {
+        Customer customer = customerRepository.findByPan(pan)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        return map(customer);
+    }
+
+    private CustomerDto map(Customer c) {
+        CustomerDto d = new CustomerDto();
+        d.setId(c.getId());
+        d.setUserId(c.getUserAccount().getId());
+        d.setFullName(c.getFullName());
+        d.setPan(c.getPan());
+        d.setEmail(c.getEmail());
+        d.setPhone(c.getPhone());
+        d.setMonthlyIncome(c.getMonthlyIncome());
+        d.setEmploymentType(c.getEmploymentType());
+        d.setEmploymentYears(c.getEmploymentYears());
+        d.setCreatedAt(c.getCreatedAt());
+        return d;
     }
 }

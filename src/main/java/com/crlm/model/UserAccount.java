@@ -3,10 +3,12 @@ package com.crlm.model;
 import com.crlm.enums.AccountStatus;
 import com.crlm.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Data
+@Getter
+@Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(

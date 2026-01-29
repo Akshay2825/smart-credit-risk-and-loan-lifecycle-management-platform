@@ -1,7 +1,9 @@
 package com.crlm.controller;
 
+import com.crlm.dto.UserAccountDto;
 import com.crlm.model.UserAccount;
 import com.crlm.service.UserAccountService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +18,8 @@ public class UserAccountController {
     private final UserAccountService userAccountService;
 
     @PostMapping
-    public UserAccount createUser(@RequestBody UserAccount userAccount){
-        System.out.println("INSIDE CONTROLLER");
-        return userAccountService.createUserAccount(userAccount);
+    public UserAccount createUser(@Valid @RequestBody UserAccountDto dto){
+        return userAccountService.createUserAccount(dto);
     }
 
     @GetMapping("/{userId}")

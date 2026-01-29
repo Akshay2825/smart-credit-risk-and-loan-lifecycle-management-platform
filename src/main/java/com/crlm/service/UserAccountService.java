@@ -1,12 +1,13 @@
 package com.crlm.service;
 
+import com.crlm.dto.UserAccountDto;
 import com.crlm.model.UserAccount;
 
 import java.util.UUID;
 
 public interface UserAccountService {
 
-    UserAccount createUserAccount(UserAccount userAccount);
+    UserAccount createUserAccount(UserAccountDto dto);
 
     UserAccount getByUsername( String userName);
 

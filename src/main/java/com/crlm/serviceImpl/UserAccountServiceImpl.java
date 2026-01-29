@@ -1,6 +1,9 @@
 package com.crlm.serviceImpl;
 
+import com.crlm.dto.UserAccountDto;
 import com.crlm.enums.AccountStatus;
+import com.crlm.exception.ResourceNotFoundException;
+import com.crlm.exception.UserAlreadyExistsException;
 import com.crlm.model.UserAccount;
 import com.crlm.repository.UserAccountRepository;
 import com.crlm.service.UserAccountService;
@@ -18,24 +21,32 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserAccountRepository userAccountRepository;
 
     @Override
-    public UserAccount createUserAccount(UserAccount userAccount) {
-        if(userAccountRepository.existsByUsername(userAccount.getUsername())){
-            throw new IllegalArgumentException("User already exist");
+    public UserAccount createUserAccount(UserAccountDto dto) {
+        if(userAccountRepository.existsByUsername(dto.getUsername())){
+            throw new UserAlreadyExistsException("User already exist");
         }
-        userAccount.setStatus(AccountStatus.ACTIVE);
-        return userAccountRepository.save(userAccount);
+        UserAccount user= new UserAccount();
+        user.setUsername(dto.getUsername());
+        user.setPasswordHash(dto.getPasswordHash());
+        user.setRole(dto.getRole());
+        user.setStatus(AccountStatus.ACTIVE);
+
+        return userAccountRepository.save(user);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserAccount getByUsername(String userName) {
-        return userAccountRepository.findByUsername(userName).orElseThrow(()->new IllegalArgumentException("Usernot found"));
+        return userAccountRepository.findByUsername(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserAccount getByUserId(UUID userId) {
-        return userAccountRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("User not found"));
+        return userAccountRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override

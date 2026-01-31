@@ -1,5 +1,6 @@
 package com.crlm.service;
 
+import com.crlm.model.EmiSchedule;
 import com.crlm.model.LoanAccount;
 
 import java.math.BigDecimal;
@@ -20,4 +21,5 @@ public interface LoanAccountService {
     LoanAccount getById(UUID loanAccountId);
 
     List<LoanAccount> getByCustomerId(UUID customerId);
+
 }

@@ -84,5 +84,10 @@ public class EmiSchedule extends BaseEntity {
                 outstandingBalance
         );
     }
+
+    public void markPaid() {
+        this.status = EmiStatus.PAID;
+    }
+
 }
 
